@@ -22,7 +22,7 @@ services:
   # Nginx Service
   webserver:
     image: nginx:alpine
-    container_name: webserver
+    container_name: webserver_test
     restart: unless-stopped
     tty: true
     ports:
