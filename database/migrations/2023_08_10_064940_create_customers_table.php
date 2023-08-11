@@ -25,10 +25,10 @@ return new class extends Migration
             $table->text("gender");
             $table->text("birth_date");
             $table->text("occupation");
-            $table->text("province");
-            $table->text("city");
-            $table->text("subdistrict");
-            $table->text("village");
+            $table->json("province");
+            $table->json("city");
+            $table->json("subdistrict");
+            $table->json("village");
             $table->timestamps();
         });
     }

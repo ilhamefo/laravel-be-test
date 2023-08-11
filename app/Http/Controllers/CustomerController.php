@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
+use Illuminate\Support\Facades\DB;
 
 class CustomerController extends Controller
 {
@@ -19,6 +20,51 @@ class CustomerController extends Controller
             return response()->json([
                 'status' => true,
                 'data'   => $data
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'data'   => $th->getMessage()
+            ], 400);
+        }
+    }
+    public function countCustomerByCity()
+    {
+        try {
+            $data = DB::select("SELECT customers.city::json->>'nama' as nama, count(id) FROM customers GROUP BY city->>'nama'");
+
+            $namaValues = array_column($data, "nama");
+            $countValues = array_column($data, "count");
+            
+            return response()->json([
+                'status' => true,
+                'data'   => [
+                    'labels' => $namaValues,
+                    'count' => $countValues
+                ]
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'data'   => $th->getMessage()
+            ], 400);
+        }
+    }
+
+    public function countCustomerGenders()
+    {
+        try {
+            $data = DB::select("SELECT customers.gender as nama, count(id) FROM customers GROUP BY gender");
+
+            $namaValues = array_column($data, "nama");
+            $countValues = array_column($data, "count");
+            
+            return response()->json([
+                'status' => true,
+                'data'   => [
+                    'labels' => $namaValues,
+                    'count' => $countValues
+                ]
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -110,8 +156,8 @@ class CustomerController extends Controller
             ]);
 
             return response()->json([
-                'status' => true,
-                'message'   => "updated"
+                'status'  => true,
+                'message' => "updated"
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
@@ -132,8 +178,8 @@ class CustomerController extends Controller
             $data->delete();
 
             return response()->json([
-                'status' => true,
-                'message'   => "deleted"
+                'status'  => true,
+                'message' => "deleted"
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
